@@ -105,3 +105,23 @@ test("dynamic community titles are never used as Markdown link labels", () => {
   );
   assert.doesNotMatch(renderedText, /\[Idea/);
 });
+
+test("dashboard uses roomy section spacing without bloating list items", () => {
+  const dashboard = buildHomeDashboard(data, config, { changedAt: new Date() });
+
+  const separators = dashboard.components.filter((component) => component.type === 14);
+  assert.ok(separators.length >= 5);
+  assert.ok(separators.every((component) => component.spacing === 2));
+
+  const dashboardText = dashboard.components
+    .flatMap((component) => component.components ?? [component])
+    .filter((component) => component?.type === 10)
+    .map((component) => component.content)
+    .join("\n");
+
+  assert.match(dashboardText, /## 🟢 Play Desk\n\n\*\*2 people are available right now\*\*\n\n•/);
+  assert.match(dashboardText, /## 📚 Learn Smash\n\n\*\*20\*\* Ultimate chapters · \*\*86\*\* fighter guides\n\nMost played here:/);
+  assert.match(dashboardText, /## ☁️ Around the server\n\n🛰️ \*\*Latest update:/);
+  assert.match(dashboardText, /### 👋 New here\?\n\nRead the rules/);
+});
+
