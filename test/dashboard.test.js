@@ -59,6 +59,13 @@ test("full Home dashboard stays below Discord's 40 component limit", () => {
   assert.ok(countComponents(dashboard) <= 40);
   assert.equal(dashboard.type, 17);
   assert.ok(dashboard.components.some((component) => component.type === 1 && component.components.some((button) => button.custom_id === "home:my-fighters")));
+  const dashboardText = dashboard.components
+    .flatMap((component) => component.components ?? [component])
+    .filter((component) => component?.type === 10)
+    .map((component) => component.content)
+    .join("\n");
+  assert.match(dashboardText, /## 🔴 Live Tournament Streams/);
+  assert.doesNotMatch(dashboardText, /Smash is live/);
 });
 
 
