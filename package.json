@@ -1,6 +1,6 @@
 {
   "name": "twowhit-home-bot",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "private": true,
   "description": "Stateless, live Components V2 home dashboard for TwoWhit\u2019s Tots.",
   "type": "module",
