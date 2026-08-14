@@ -1,4 +1,5 @@
 import { readLatestAnnouncement } from "./announcements.js";
+import { collectChannelIcons } from "./channelIcons.js";
 import { readDeutschBuddy } from "./deutschBuddy.js";
 import { collectForumData } from "./forums.js";
 import { fetchLiveStatus, readLatestLiveAlert } from "./liveStatus.js";
@@ -19,8 +20,9 @@ export async function collectHomeData(client, config) {
   await guild.roles.fetch().catch(() => null);
 
   const forumsPromise = collectForumData(client, config);
-  const [themeResult, playDeskResult, streamGuideResult, liveResult, liveAlertResult, deutschResult, forumResult, announcementResult, voiceResult] = await Promise.allSettled([
+  const [themeResult, channelIconsResult, playDeskResult, streamGuideResult, liveResult, liveAlertResult, deutschResult, forumResult, announcementResult, voiceResult] = await Promise.allSettled([
     collectTheme(client, config, guild),
+    collectChannelIcons(client, config),
     readPlayDesk(client, config),
     readStreamGuide(client, config),
     fetchLiveStatus(config),
@@ -47,6 +49,7 @@ export async function collectHomeData(client, config) {
       boostCount: guild.premiumSubscriptionCount ?? 0,
     },
     theme: settled("Theme", themeResult, { emoji: "☁️", accent: config.accentColor, phase: null, guildName: guild.name }),
+    channelIcons: settled("Channel icons", channelIconsResult, { general: null, announcements: null, suggestions: null }),
     playDesk: settled("Play Desk", playDeskResult, { status: "error", data: null }),
     streamGuide: settled("Stream Guide", streamGuideResult, { status: "error", data: null }),
     live: settled("Live status", liveResult, { status: "error", isLive: null, name: config.streamer.name, username: config.streamer.username }),

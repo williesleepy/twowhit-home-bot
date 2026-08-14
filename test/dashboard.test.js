@@ -18,6 +18,7 @@ const config = {
 const data = {
   guild: { name: "TwoWhit’s Tots", memberCount: 53 },
   theme: { emoji: "☁️", accent: 0x87a8b9 },
+  channelIcons: { general: "🌤️", announcements: "📯", suggestions: "🌱" },
   members: {
     available: true,
     smasherCount: 32,
@@ -95,15 +96,43 @@ test("dynamic community titles are never used as Markdown link labels", () => {
 
   assert.match(
     renderedText,
-    /🛰️ \*\*Latest update:\*\* 🧪 Fighter Labs → fighter-labs · \[Open\]\(https:\/\/discord\.com\/channels\/a\/b\/announcement\)/,
+    /📯 \*\*Latest update:\*\* 🧪 Fighter Labs → fighter-labs · \[Open\]\(https:\/\/discord\.com\/channels\/a\/b\/announcement\)/,
   );
   assert.doesNotMatch(renderedText, /\[🧪 Fighter Labs/);
 
   assert.match(
     renderedText,
-    /💫 \*\*Latest suggestion:\*\* Idea \[beta\] #fighter-labs · \[Open\]\(https:\/\/discord\.com\/channels\/a\/b\/suggestion\)/,
+    /🌱 \*\*Latest suggestion:\*\* Idea \[beta\] #fighter-labs · \[Open\]\(https:\/\/discord\.com\/channels\/a\/b\/suggestion\)/,
   );
   assert.doesNotMatch(renderedText, /\[Idea/);
+});
+
+test("community icons follow the current channel-name emojis with safe fallbacks", () => {
+  const dynamicDashboard = buildHomeDashboard(data, config, { changedAt: new Date() });
+  const dynamicText = dynamicDashboard.components
+    .flatMap((component) => component.components ?? [component])
+    .filter((component) => component?.type === 10)
+    .map((component) => component.content)
+    .join("\n");
+
+  assert.match(dynamicText, /## 🌤️ Around the server/);
+  assert.match(dynamicText, /📯 \*\*Latest update:/);
+  assert.match(dynamicText, /🌱 \*\*Latest suggestion:/);
+
+  const fallbackDashboard = buildHomeDashboard(
+    { ...data, channelIcons: { general: null, announcements: null, suggestions: null } },
+    config,
+    { changedAt: new Date() },
+  );
+  const fallbackText = fallbackDashboard.components
+    .flatMap((component) => component.components ?? [component])
+    .filter((component) => component?.type === 10)
+    .map((component) => component.content)
+    .join("\n");
+
+  assert.match(fallbackText, /## ☁️ Around the server/);
+  assert.match(fallbackText, /🛰️ \*\*Latest update:/);
+  assert.match(fallbackText, /💫 \*\*Latest suggestion:/);
 });
 
 test("dashboard uses roomy section spacing without bloating list items", () => {
@@ -121,7 +150,8 @@ test("dashboard uses roomy section spacing without bloating list items", () => {
 
   assert.match(dashboardText, /## 🟢 Play Desk\n\n\*\*2 people are available right now\*\*\n\n•/);
   assert.match(dashboardText, /## 📚 Learn Smash\n\n\*\*20\*\* Ultimate chapters · \*\*86\*\* fighter guides\n\nMost played here:/);
-  assert.match(dashboardText, /## ☁️ Around the server\n\n🛰️ \*\*Latest update:/);
+  assert.match(dashboardText, /## 🌤️ Around the server\n\n📯 \*\*Latest update:/);
+  assert.match(dashboardText, /🌱 \*\*Latest suggestion:/);
   assert.match(dashboardText, /### 👋 New here\?\n\nRead the rules/);
 });
 

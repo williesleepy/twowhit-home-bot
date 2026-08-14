@@ -140,11 +140,14 @@ function learningText(data) {
 }
 
 function communityText(data) {
-  const blocks = ["## ☁️ Around the server"];
+  const generalEmoji = data.channelIcons?.general || "☁️";
+  const announcementEmoji = data.channelIcons?.announcements || "🛰️";
+  const suggestionEmoji = data.channelIcons?.suggestions || "💫";
+  const blocks = [`## ${generalEmoji} Around the server`];
 
   if (data.announcement?.summary) {
     blocks.push(
-      `🛰️ **Latest update:** ${escapeMarkdown(data.announcement.summary)} · ${markdownLink("Open", data.announcement.url)}`,
+      `${announcementEmoji} **Latest update:** ${escapeMarkdown(data.announcement.summary)} · ${markdownLink("Open", data.announcement.url)}`,
     );
   }
 
@@ -152,7 +155,7 @@ function communityText(data) {
     const statuses = data.suggestions.latest.tags.filter((tag) => /Review|Planned|Progress|Completed|Declined/i.test(tag));
     const status = statuses[0] ? ` · ${statuses[0]}` : "";
     const suggestionLines = [
-      `💫 **Latest suggestion:** ${escapeMarkdown(truncate(data.suggestions.latest.name, 120))}${status} · ${markdownLink("Open", data.suggestions.latest.url)}`,
+      `${suggestionEmoji} **Latest suggestion:** ${escapeMarkdown(truncate(data.suggestions.latest.name, 120))}${status} · ${markdownLink("Open", data.suggestions.latest.url)}`,
     ];
 
     const activeSuggestionStatuses = Object.entries(data.suggestions.statusCounts ?? {})
@@ -165,7 +168,7 @@ function communityText(data) {
     blocks.push(suggestionLines.join("\n"));
   } else if (data.suggestions.count) {
     const suggestionLines = [
-      `💫 **${data.suggestions.count} community ${data.suggestions.count === 1 ? "idea" : "ideas"}** in Suggestions.`,
+      `${suggestionEmoji} **${data.suggestions.count} community ${data.suggestions.count === 1 ? "idea" : "ideas"}** in Suggestions.`,
     ];
 
     const activeSuggestionStatuses = Object.entries(data.suggestions.statusCounts ?? {})

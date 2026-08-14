@@ -32,11 +32,11 @@ Most played here: Bowser · Kirby · Joker
 
 ────────────────
 
-☁️ Around the server
+🌤️ Around the server
 
-Latest announcement
+📯 Latest update: Fighter Labs → fighter-guides · Open
 
-Latest suggestion + workflow state
+🌱 Latest suggestion: Chat tournament · Open
 
 Voice activity, only when occupied
 
@@ -54,3 +54,5 @@ Home updates automatically…
 ```
 
 When twoWhit is currently live, a dedicated **🔴 LIVE** section with a Watch Live link is inserted near the top and uses the same roomy section spacing.
+
+> The three icons above are illustrative: Homekeeper reads them from the current General, Announcements, and Suggestions channel names at runtime.

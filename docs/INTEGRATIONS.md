@@ -59,6 +59,8 @@ Home does not duplicate Deutsch Buddy’s deterministic lesson-plan data or sche
 
 The existing Daykeeper service owns the actual server renames/weather theme. Home observes the current leading emoji on its own channel/category and uses it in the dashboard title. When dynamic accents are enabled, it maps common weather emojis and day phases to a compatible accent.
 
+Home also observes the live leading emoji on **General**, **Announcements**, and **Suggestions** every refresh. Those emojis drive the `Around the server`, `Latest update`, and `Latest suggestion` labels respectively, so scheduled channel-icon changes automatically propagate into Home. If a channel has no resolvable leading emoji, Home falls back to `☁️`, `🛰️`, or `💫` for that surface.
+
 This avoids importing Daykeeper’s bundled theme configuration, which may point at historical server IDs.
 
 ## 6. Role Recovery
