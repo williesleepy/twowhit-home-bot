@@ -87,11 +87,11 @@ function playDeskText(data, config) {
 function streamGuideText(data, config) {
   const guide = data.streamGuide.data;
   if (!guide) {
-    return "## 📺 This Week in Smash\nSee notable Ultimate & Melee tournaments, broadcasts, and what’s live.";
+    return "## 📺 Tournament Streams\nSee notable Ultimate & Melee tournaments, broadcasts, and what’s live.";
   }
 
   if (guide.liveBroadcasts.length) {
-    const lines = ["## 🔴 Smash is live"];
+    const lines = ["## 🔴 Live Tournament Streams"];
     for (const broadcast of guide.liveBroadcasts.slice(0, config.limits.liveBroadcasts)) {
       const stream = broadcast.url ? `[${broadcast.name}](${broadcast.url})` : broadcast.name;
       const context = broadcast.context?.[0] ? ` · ${truncate(broadcast.context[0], 80)}` : "";
@@ -101,7 +101,7 @@ function streamGuideText(data, config) {
   }
 
   if (guide.today.length) {
-    const lines = ["## 📺 Smash today"];
+    const lines = ["## 📺 Tournaments Today"];
     for (const event of guide.today.slice(0, config.limits.todayTournaments)) {
       const detail = [event.games, event.entrants].filter(Boolean).join(" · ");
       lines.push(`• **${truncate(event.name, 120)}**${detail ? ` — ${detail}` : ""}`);
@@ -112,7 +112,7 @@ function streamGuideText(data, config) {
 
   const count = guide.weekly.length;
   return [
-    "## 📺 This Week in Smash",
+    "## 📺 Tournament Streams This Week",
     count
       ? `**${count} notable ${count === 1 ? "tournament" : "tournaments"}** still on the guide.`
       : "Nothing notable is currently listed on the guide.",
