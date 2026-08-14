@@ -13,7 +13,7 @@ Your little corner of the internet.
 Nobody is looking right now.
 
 ────────────────
-📺 This Week in Smash                [Open Stream Guide]
+📺 Tournament Streams This Week     [Open Stream Guide]
 Live broadcast / today's event / weekly fallback
 
 ────────────────
