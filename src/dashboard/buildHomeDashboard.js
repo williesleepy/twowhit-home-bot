@@ -63,15 +63,17 @@ function liveHeaderLine(data, config) {
 function playDeskText(data, config) {
   const panel = data.playDesk.data;
   if (!panel) {
-    return "## 🟢 Play Desk\nSee who’s around, mark yourself available, or join a session.";
+    return "## 🟢 Play Desk\n\nSee who’s around, mark yourself available, or join a session.";
   }
   if (panel.availableCount === 0) {
-    return "## 🟢 Play Desk\n**Nobody is looking right now.** Be the first 👀";
+    return "## 🟢 Play Desk\n\n**Nobody is looking right now.** Be the first 👀";
   }
 
   const lines = [
     "## 🟢 Play Desk",
+    "",
     `**${panel.availableCount} ${panel.availableCount === 1 ? "person is" : "people are"} available right now**`,
+    "",
   ];
   for (const person of panel.people.slice(0, config.limits.playDeskPeople)) {
     const focus = person.focus ? ` — ${truncate(person.focus, 70)}` : "";
@@ -87,11 +89,11 @@ function playDeskText(data, config) {
 function streamGuideText(data, config) {
   const guide = data.streamGuide.data;
   if (!guide) {
-    return "## 📺 Tournament Streams\nSee notable Ultimate & Melee tournaments, broadcasts, and what’s live.";
+    return "## 📺 Tournament Streams\n\nSee notable Ultimate & Melee tournaments, broadcasts, and what’s live.";
   }
 
   if (guide.liveBroadcasts.length) {
-    const lines = ["## 🔴 Live Tournament Streams"];
+    const lines = ["## 🔴 Live Tournament Streams", ""];
     for (const broadcast of guide.liveBroadcasts.slice(0, config.limits.liveBroadcasts)) {
       const stream = broadcast.url ? `[${broadcast.name}](${broadcast.url})` : broadcast.name;
       const context = broadcast.context?.[0] ? ` · ${truncate(broadcast.context[0], 80)}` : "";
@@ -101,7 +103,7 @@ function streamGuideText(data, config) {
   }
 
   if (guide.today.length) {
-    const lines = ["## 📺 Tournaments Today"];
+    const lines = ["## 📺 Tournaments Today", ""];
     for (const event of guide.today.slice(0, config.limits.todayTournaments)) {
       const detail = [event.games, event.entrants].filter(Boolean).join(" · ");
       lines.push(`• **${truncate(event.name, 120)}**${detail ? ` — ${detail}` : ""}`);
@@ -113,6 +115,7 @@ function streamGuideText(data, config) {
   const count = guide.weekly.length;
   return [
     "## 📺 Tournament Streams This Week",
+    "",
     count
       ? `**${count} notable ${count === 1 ? "tournament" : "tournaments"}** still on the guide.`
       : "Nothing notable is currently listed on the guide.",
@@ -121,7 +124,7 @@ function streamGuideText(data, config) {
 }
 
 function learningText(data) {
-  const lines = ["## 📚 Learn Smash"];
+  const lines = ["## 📚 Learn Smash", ""];
   const counts = [];
   if (data.ultimateGuide.count) counts.push(`**${data.ultimateGuide.count}** Ultimate chapters`);
   if (data.fighterGuides.count) counts.push(`**${data.fighterGuides.count}** fighter guides`);
@@ -131,31 +134,48 @@ function learningText(data) {
     const popular = data.members.topFighters
       .map((fighter, index) => `${index === 0 ? "👑 " : ""}**${fighter.fighterName}** (${fighter.count})`)
       .join(" · ");
-    lines.push(`Most played here: ${popular}`);
+    lines.push("", `Most played here: ${popular}`);
   }
   return lines.join("\n");
 }
 
 function communityText(data) {
-  const lines = ["## ☁️ Around the server"];
+  const blocks = ["## ☁️ Around the server"];
 
   if (data.announcement?.summary) {
-    lines.push(`🛰️ **Latest update:** ${escapeMarkdown(data.announcement.summary)} · ${markdownLink("Open", data.announcement.url)}`);
+    blocks.push(
+      `🛰️ **Latest update:** ${escapeMarkdown(data.announcement.summary)} · ${markdownLink("Open", data.announcement.url)}`,
+    );
   }
 
   if (data.suggestions.latest) {
     const statuses = data.suggestions.latest.tags.filter((tag) => /Review|Planned|Progress|Completed|Declined/i.test(tag));
     const status = statuses[0] ? ` · ${statuses[0]}` : "";
-    lines.push(`💫 **Latest suggestion:** ${escapeMarkdown(truncate(data.suggestions.latest.name, 120))}${status} · ${markdownLink("Open", data.suggestions.latest.url)}`);
-  } else if (data.suggestions.count) {
-    lines.push(`💫 **${data.suggestions.count} community ${data.suggestions.count === 1 ? "idea" : "ideas"}** in Suggestions.`);
-  }
+    const suggestionLines = [
+      `💫 **Latest suggestion:** ${escapeMarkdown(truncate(data.suggestions.latest.name, 120))}${status} · ${markdownLink("Open", data.suggestions.latest.url)}`,
+    ];
 
-  const activeSuggestionStatuses = Object.entries(data.suggestions.statusCounts ?? {})
-    .filter(([name, count]) => count > 0 && /Under Review|Planned|In Progress/i.test(name))
-    .map(([name, count]) => `${name.replace(/^[^\p{L}]+/u, "")} ${count}`);
-  if (activeSuggestionStatuses.length) {
-    lines.push(`-# Ideas in motion: ${activeSuggestionStatuses.join(" · ")}`);
+    const activeSuggestionStatuses = Object.entries(data.suggestions.statusCounts ?? {})
+      .filter(([name, count]) => count > 0 && /Under Review|Planned|In Progress/i.test(name))
+      .map(([name, count]) => `${name.replace(/^[^\p{L}]+/u, "")} ${count}`);
+    if (activeSuggestionStatuses.length) {
+      suggestionLines.push(`-# Ideas in motion: ${activeSuggestionStatuses.join(" · ")}`);
+    }
+
+    blocks.push(suggestionLines.join("\n"));
+  } else if (data.suggestions.count) {
+    const suggestionLines = [
+      `💫 **${data.suggestions.count} community ${data.suggestions.count === 1 ? "idea" : "ideas"}** in Suggestions.`,
+    ];
+
+    const activeSuggestionStatuses = Object.entries(data.suggestions.statusCounts ?? {})
+      .filter(([name, count]) => count > 0 && /Under Review|Planned|In Progress/i.test(name))
+      .map(([name, count]) => `${name.replace(/^[^\p{L}]+/u, "")} ${count}`);
+    if (activeSuggestionStatuses.length) {
+      suggestionLines.push(`-# Ideas in motion: ${activeSuggestionStatuses.join(" · ")}`);
+    }
+
+    blocks.push(suggestionLines.join("\n"));
   }
 
   if (data.voice?.totalHumans > 0) {
@@ -163,21 +183,21 @@ function communityText(data) {
       .filter((room) => room.count > 0)
       .map((room) => `<#${room.channelId}> **${room.count}**`)
       .join(" · ");
-    lines.push(`🎙️ **Voice right now:** ${occupied}`);
+    blocks.push(`🎙️ **Voice right now:** ${occupied}`);
   }
 
   if (data.deutsch.data?.postedToday && data.deutsch.data.words.length) {
     const words = data.deutsch.data.words.slice(0, 3).map((word) => `**${word.german}**`).join(" · ");
-    lines.push(`🇩🇪 **Deutsch today:** ${words}${data.deutsch.data.quizReady ? " · 🧠 quiz ready" : " · quiz later"}`);
+    blocks.push(`🇩🇪 **Deutsch today:** ${words}${data.deutsch.data.quizReady ? " · 🧠 quiz ready" : " · quiz later"}`);
   } else if (data.deutsch.status === "ok" && data.deutsch.data && !data.deutsch.data.postedToday) {
-    lines.push("🇩🇪 **Deutsch Buddy:** today’s lesson hasn’t posted yet.");
+    blocks.push("🇩🇪 **Deutsch Buddy:** today’s lesson hasn’t posted yet.");
   }
 
-  if (lines.length === 1) {
-    lines.push("Chat, share clips, wander into the Tall Grass, or leave an idea for the server.");
+  if (blocks.length === 1) {
+    blocks.push("Chat, share clips, wander into the Tall Grass, or leave an idea for the server.");
   }
 
-  return lines.join("\n");
+  return blocks.join("\n\n");
 }
 
 export function buildHomeDashboard(data, config, meta = {}) {
@@ -186,32 +206,32 @@ export function buildHomeDashboard(data, config, meta = {}) {
 
   children.push(text(
     `# ${titleEmoji} ${data.guild.name}\n` +
-    `**${config.tagline}**\n` +
+    `**${config.tagline}**\n\n` +
     `${memberHeader(data)}\n` +
     liveHeaderLine(data, config),
   ));
 
   if (data.live.isLive === true) {
-    children.push(separator());
+    children.push(separator({ large: true }));
     children.push(section(
-      `## 🔴 ${config.streamer.name} is LIVE!\nThe stream is live on TikTok right now.`,
+      `## 🔴 ${config.streamer.name} is LIVE!\n\nThe stream is live on TikTok right now.`,
       linkButton("Watch Live", data.live.liveUrl),
     ));
   }
 
-  children.push(separator());
+  children.push(separator({ large: true }));
   children.push(section(
     playDeskText(data, config),
     linkButton("Open Play Desk", guildChannel(config, "playDesk")),
   ));
 
-  children.push(separator());
+  children.push(separator({ large: true }));
   children.push(section(
     streamGuideText(data, config),
     linkButton("Open Stream Guide", guildChannel(config, "tournamentStreams")),
   ));
 
-  children.push(separator());
+  children.push(separator({ large: true }));
   children.push(text(learningText(data)));
   children.push(row([
     linkButton("Ultimate Guide", guildChannel(config, "ultimateGuide")),
@@ -220,7 +240,7 @@ export function buildHomeDashboard(data, config, meta = {}) {
     customButton("My Setup", "home:my-setup", ButtonStyle.secondary),
   ]));
 
-  children.push(separator());
+  children.push(separator({ large: true }));
   children.push(text(communityText(data)));
   children.push(row([
     linkButton("General", guildChannel(config, "general")),
@@ -229,9 +249,9 @@ export function buildHomeDashboard(data, config, meta = {}) {
     linkButton("Suggestions", guildChannel(config, "suggestions")),
   ]));
 
-  children.push(separator());
+  children.push(separator({ large: true }));
   children.push(section(
-    "### 👋 New here?\nRead the rules, use **Channels & Roles** to choose your interests, fighters, color, and notifications, then jump in whenever you want.",
+    "### 👋 New here?\n\nRead the rules, use **Channels & Roles** to choose your interests, fighters, color, and notifications, then jump in whenever you want.",
     linkButton("Read Rules", guildChannel(config, "rules")),
   ));
   children.push(row([
