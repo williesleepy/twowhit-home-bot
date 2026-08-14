@@ -1,0 +1,92 @@
+services:
+  - type: worker
+    name: twowhit-home-bot
+    runtime: node
+    plan: starter
+    buildCommand: npm install --omit=dev
+    startCommand: npm start
+    envVars:
+      - key: DISCORD_TOKEN
+        sync: false
+      - key: GUILD_ID
+        value: "1533152480328941778"
+      - key: HOME_CHANNEL_ID
+        value: "1533161470697803968"
+      - key: DISPLAY_TIME_ZONE
+        value: America/Chicago
+      - key: REFRESH_INTERVAL_SECONDS
+        value: "300"
+      - key: EVENT_REFRESH_DEBOUNCE_MS
+        value: "2500"
+      - key: MESSAGE_SCAN_LIMIT
+        value: "50"
+      - key: READ_EXTERNAL_BOT_MESSAGES
+        value: "true"
+      - key: ENABLE_MEMBER_STATS
+        value: "true"
+      - key: ENABLE_VOICE_ACTIVITY
+        value: "true"
+      - key: ENABLE_LIVE_STATUS
+        value: "true"
+      - key: STREAMER_USERNAME
+        value: twowhitaker
+      - key: STREAMER_NAME
+        value: twoWhit
+      - key: LIVE_STATUS_API_URL_TEMPLATE
+        value: https://tiktok-live-api-0k0j.onrender.com/live/{username}
+      - key: SYNC_DAYKEEPER_THEME
+        value: "true"
+      - key: DYNAMIC_ACCENT
+        value: "true"
+      - key: RULES_CHANNEL_ID
+        value: "1533153008324579580"
+      - key: ANNOUNCEMENTS_CHANNEL_ID
+        value: "1533162273902821437"
+      - key: SUGGESTIONS_CHANNEL_ID
+        value: "1533205700896096326"
+      - key: GENERAL_CHANNEL_ID
+        value: "1533208473058148464"
+      - key: MEDIA_CHANNEL_ID
+        value: "1533208566603972698"
+      - key: LOUNGE_CHANNEL_ID
+        value: "1533210170375803100"
+      - key: GAME_ROOM_CHANNEL_ID
+        value: "1533210273866059966"
+      - key: MEMBER_UPDATES_CHANNEL_ID
+        value: "1533211875301523476"
+      - key: STREAM_ALERTS_CHANNEL_ID
+        value: "1533266694238376088"
+      - key: PLAY_ALERTS_CHANNEL_ID
+        value: "1533268804132536462"
+      - key: DEUTSCH_BUDDY_CHANNEL_ID
+        value: "1533270554491224087"
+      - key: TALL_GRASS_CHANNEL_ID
+        value: "1533359187046957116"
+      - key: PLAY_DESK_CHANNEL_ID
+        value: "1535026289210294272"
+      - key: TOURNAMENT_STREAMS_CHANNEL_ID
+        value: "1536803243068231741"
+      - key: FIGHTER_GUIDES_CHANNEL_ID
+        value: "1537098759660503180"
+      - key: ULTIMATE_GUIDE_CHANNEL_ID
+        value: "1537122040920936640"
+      - key: LIVE_NOTIFY_BOT_ID
+        value: "1523931968163545259"
+      - key: DAYKEEPER_BOT_ID
+        value: "1526587929219043388"
+      - key: DEUTSCH_BUDDY_BOT_ID
+        value: "1528417628907896943"
+      - key: STREAM_GUIDE_BOT_ID
+        value: "1532814691393339422"
+      - key: PLAY_DESK_BOT_ID
+        value: "1534982817690161302"
+      - key: ROLE_RECOVERY_BOT_ID
+        value: "1536060162400587817"
+      - key: TOT_ROLE_ID
+        value: "1533251069147087049"
+      - key: SMASHER_ROLE_ID
+        value: "1533251214656016576"
+      - key: STREAM_NOTIFICATIONS_ROLE_ID
+        value: "1533250752208830485"
+      - key: PLAY_NOTIFICATIONS_ROLE_ID
+        value: "1533250864112730142"
