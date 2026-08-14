@@ -148,6 +148,7 @@ test("dashboard uses roomy section spacing without bloating list items", () => {
     .map((component) => component.content)
     .join("\n");
 
+  assert.match(dashboardText, /👥 \*\*53 members\*\* · 🎮 \*\*32 Smashers\*\* · 🥔 \*\*37 Tots\*\*\n\n🔴 \*\*twoWhit is live\*\*/);
   assert.match(dashboardText, /## 🟢 Play Desk\n\n\*\*2 people are available right now\*\*\n\n•/);
   assert.match(dashboardText, /## 📚 Learn Smash\n\n\*\*20\*\* Ultimate chapters · \*\*86\*\* fighter guides\n\nMost played here:/);
   assert.match(dashboardText, /## 🌤️ Around the server\n\n📯 \*\*Latest update:/);

@@ -210,7 +210,7 @@ export function buildHomeDashboard(data, config, meta = {}) {
   children.push(text(
     `# ${titleEmoji} ${data.guild.name}\n` +
     `**${config.tagline}**\n\n` +
-    `${memberHeader(data)}\n` +
+    `${memberHeader(data)}\n\n` +
     liveHeaderLine(data, config),
   ));
 
