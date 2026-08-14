@@ -18,6 +18,18 @@ export function escapeMarkdown(value) {
     .replaceAll("|", "\\|");
 }
 
+export function escapeMarkdownLinkLabel(value) {
+  return escapeMarkdown(value)
+    .replaceAll("[", "\\[")
+    .replaceAll("]", "\\]");
+}
+
+export function markdownLink(label, url, maxLabelLength = 150) {
+  if (!url) return escapeMarkdownLinkLabel(truncate(label, maxLabelLength));
+  const safeLabel = escapeMarkdownLinkLabel(truncate(label, maxLabelLength));
+  return `[${safeLabel}](${url})`;
+}
+
 export function firstEmoji(value) {
   const text = String(value ?? "").trim();
   const match = text.match(/^(?:\p{Extended_Pictographic}|[#*0-9]\uFE0F?\u20E3)(?:\uFE0F|\u200D(?:\p{Extended_Pictographic}|[#*0-9]\uFE0F?\u20E3))*/u);

@@ -188,3 +188,7 @@ src/
 ```
 
 For the audit of the six supplied services and the exact integration strategy, see [`docs/INTEGRATIONS.md`](docs/INTEGRATIONS.md). For a compact server/channel map, see [`docs/SERVER_SURFACES.md`](docs/SERVER_SURFACES.md).
+
+## Link-label safety
+
+Home flattens Discord mentions and other clickable Discord tokens before placing announcement text inside Markdown links. For example, an announcement title containing `<#CHANNEL_ID>` is displayed as `#channel-name` inside the Home link instead of nesting a clickable channel mention inside another link. The same shared link builder safely escapes suggestion titles and other Markdown-sensitive link labels.
