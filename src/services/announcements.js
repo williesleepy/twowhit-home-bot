@@ -4,27 +4,28 @@ import { collapseWhitespace, truncate } from "../utils/text.js";
 
 function displayChannelMention(message, id) {
   const channel = message.mentions?.channels?.get(id) ?? message.guild?.channels?.cache?.get(id);
-  return channel?.name ? `#${channel.name}` : "#channel";
+  return channel?.name ? channel.name : "channel";
 }
 
 function displayUserMention(message, id) {
   const member = message.guild?.members?.cache?.get(id);
   const user = message.mentions?.users?.get(id) ?? member?.user;
   const name = member?.displayName ?? user?.globalName ?? user?.username;
-  return name ? `@${name}` : "@user";
+  return name ?? "user";
 }
 
 function displayRoleMention(message, id) {
   const role = message.mentions?.roles?.get(id) ?? message.guild?.roles?.cache?.get(id);
-  return role?.name ? `@${role.name}` : "@role";
+  return role?.name ?? "role";
 }
 
 /**
- * Convert Discord's clickable mention/autolink syntaxes to plain, readable text.
+ * Convert Discord's clickable mention/autolink syntaxes to inert, readable text.
  *
- * This matters when the result is placed inside a Markdown link label. A channel
- * mention such as <#123> is itself a linked UI element in Discord, and nesting it
- * inside [label](url) can cause the outer link to render incorrectly.
+ * IMPORTANT: do not preserve Discord's visual mention sigils (#, @, /). Some
+ * clients can re-link human-readable channel/user/command names even after the
+ * original <...> token has been removed. Dynamic fetched copy should remain
+ * display-only; navigation is rendered separately with a fixed safe link label.
  */
 export function flattenDiscordLinkables(content, message = {}) {
   return String(content ?? "")
@@ -36,9 +37,11 @@ export function flattenDiscordLinkables(content, message = {}) {
     .replace(/<@!?(\d+)>/g, (_match, id) => displayUserMention(message, id))
     // Custom emoji and slash-command mentions also use Discord angle-bracket syntax.
     .replace(/<a?:([A-Za-z0-9_]+):\d+>/g, ":$1:")
-    .replace(/<\/([^:>]+):\d+>/g, "/$1")
-    // Remove angle-bracket autolink wrappers while retaining their readable target.
-    .replace(/<(https?:\/\/[^>]+)>/gi, "$1")
+    .replace(/<\/([^:>]+):\d+>/g, "$1")
+    // URLs are linkable too. Dynamic announcement text is display copy, not navigation,
+    // so collapse URLs to inert text instead of creating a second destination.
+    .replace(/<(https?:\/\/[^>]+)>/gi, "external link")
+    .replace(/\bhttps?:\/\/[^\s<>()]+/gi, "external link")
     // Timestamps are interactive Discord tokens too. Keep a neutral readable form
     // rather than nesting the token inside the outer message link.
     .replace(/<t:(\d+)(?::[tTdDfFR])?>/g, (_match, unix) => {

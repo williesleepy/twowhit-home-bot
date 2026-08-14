@@ -27,7 +27,7 @@ test("announcement summary flattens channel mentions before using them as a link
   const content = `@everyone\n\n**🧪 Fighter Labs → <#${channelId}>**`;
   assert.equal(
     summarizeAnnouncement(content, 220, message),
-    "🧪 Fighter Labs → #fighter-labs",
+    "🧪 Fighter Labs → fighter-labs",
   );
 });
 
@@ -35,7 +35,7 @@ test("announcement summary flattens Discord user and role mentions", () => {
   const content = `**Welcome <@${userId}> to <@&${roleId}>**`;
   assert.equal(
     summarizeAnnouncement(content, 220, message),
-    "Welcome @Approacher to @Smasher",
+    "Welcome Approacher to Smasher",
   );
 });
 
@@ -51,7 +51,7 @@ test("flattenDiscordLinkables converts other clickable Discord tokens to plain t
   const text = "<:bowser:123456789012345678> </play desk:333333333333333333> <https://example.com> <t:1786723200:D>";
   assert.equal(
     flattenDiscordLinkables(text, message),
-    ":bowser: /play desk https://example.com 2026-08-14",
+    ":bowser: play desk external link 2026-08-14",
   );
 });
 

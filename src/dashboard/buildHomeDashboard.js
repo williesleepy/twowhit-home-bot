@@ -1,5 +1,5 @@
 import { channelUrl, discordTimestamp } from "../utils/discord.js";
-import { markdownLink, truncate } from "../utils/text.js";
+import { escapeMarkdown, markdownLink, truncate } from "../utils/text.js";
 
 const Type = Object.freeze({ actionRow: 1, button: 2, section: 9, text: 10, separator: 14, container: 17 });
 const ButtonStyle = Object.freeze({ primary: 1, secondary: 2, success: 3, danger: 4, link: 5 });
@@ -140,13 +140,13 @@ function communityText(data) {
   const lines = ["## ☁️ Around the server"];
 
   if (data.announcement?.summary) {
-    lines.push(`🛰️ **Latest update:** ${markdownLink(data.announcement.summary, data.announcement.url, 150)}`);
+    lines.push(`🛰️ **Latest update:** ${escapeMarkdown(data.announcement.summary)} · ${markdownLink("Open", data.announcement.url)}`);
   }
 
   if (data.suggestions.latest) {
     const statuses = data.suggestions.latest.tags.filter((tag) => /Review|Planned|Progress|Completed|Declined/i.test(tag));
     const status = statuses[0] ? ` · ${statuses[0]}` : "";
-    lines.push(`💫 **Latest suggestion:** ${markdownLink(data.suggestions.latest.name, data.suggestions.latest.url, 120)}${status}`);
+    lines.push(`💫 **Latest suggestion:** ${escapeMarkdown(truncate(data.suggestions.latest.name, 120))}${status} · ${markdownLink("Open", data.suggestions.latest.url)}`);
   } else if (data.suggestions.count) {
     lines.push(`💫 **${data.suggestions.count} community ${data.suggestions.count === 1 ? "idea" : "ideas"}** in Suggestions.`);
   }

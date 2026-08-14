@@ -60,3 +60,41 @@ test("full Home dashboard stays below Discord's 40 component limit", () => {
   assert.equal(dashboard.type, 17);
   assert.ok(dashboard.components.some((component) => component.type === 1 && component.components.some((button) => button.custom_id === "home:my-fighters")));
 });
+
+
+test("dynamic community titles are never used as Markdown link labels", () => {
+  const riskyData = {
+    ...data,
+    announcement: {
+      summary: "🧪 Fighter Labs → fighter-labs",
+      url: "https://discord.com/channels/a/b/announcement",
+    },
+    suggestions: {
+      count: 1,
+      latest: {
+        name: "Idea [beta] #fighter-labs",
+        url: "https://discord.com/channels/a/b/suggestion",
+        tags: [],
+      },
+    },
+  };
+
+  const dashboard = buildHomeDashboard(riskyData, config, { changedAt: new Date() });
+  const renderedText = dashboard.components
+    .flatMap((component) => component.components ?? [component])
+    .filter((component) => component?.type === 10)
+    .map((component) => component.content)
+    .join("\n");
+
+  assert.match(
+    renderedText,
+    /🛰️ \*\*Latest update:\*\* 🧪 Fighter Labs → fighter-labs · \[Open\]\(https:\/\/discord\.com\/channels\/a\/b\/announcement\)/,
+  );
+  assert.doesNotMatch(renderedText, /\[🧪 Fighter Labs/);
+
+  assert.match(
+    renderedText,
+    /💫 \*\*Latest suggestion:\*\* Idea \[beta\] #fighter-labs · \[Open\]\(https:\/\/discord\.com\/channels\/a\/b\/suggestion\)/,
+  );
+  assert.doesNotMatch(renderedText, /\[Idea/);
+});

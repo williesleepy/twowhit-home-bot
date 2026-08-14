@@ -192,3 +192,8 @@ For the audit of the six supplied services and the exact integration strategy, s
 ## Link-label safety
 
 Home flattens Discord mentions and other clickable Discord tokens before placing announcement text inside Markdown links. For example, an announcement title containing `<#CHANNEL_ID>` is displayed as `#channel-name` inside the Home link instead of nesting a clickable channel mention inside another link. The same shared link builder safely escapes suggestion titles and other Markdown-sensitive link labels.
+
+
+### Dynamic-link safety
+
+Home never places fetched announcement or suggestion text inside a Markdown link label. Dynamic server text is rendered as inert display copy, while a fixed `[Open]` link carries the Discord destination. Discord mention syntax is also flattened without preserving `#`, `@`, or `/` sigils. This prevents channel/user/command autolinking from competing with the intended message link.
