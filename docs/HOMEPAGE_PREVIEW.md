@@ -1,10 +1,9 @@
 # Homepage shape
 
-The exact text is data-dependent, but the Components V2 message is intentionally organized as one calm, scannable control center. Major sections use **large Components V2 separator spacing**, while related list items stay compact. Blank lines shown below are deliberate.
+The exact text is data-dependent, but the Components V2 message is intentionally organized as one calm, scannable control center. Major sections use **large Components V2 separator spacing**, while related list items stay compact.
 
 ```text
 ☁️ TwoWhit’s Tots
-
 Your little corner of the internet.
 
 53 members · 32 Smashers · 37 Tots
@@ -13,19 +12,15 @@ Your little corner of the internet.
 
 ────────────────
 
-🟢 Play Desk
+🟢 Play Desk                         [Open Play Desk]
 
 Nobody is looking right now.
 
-[Open Play Desk]
-
 ────────────────
 
-📺 Tournament Streams This Week
+📺 Tournament Streams This Week     [Open Stream Guide]
 
 Live broadcast / today's event / weekly fallback
-
-[Open Stream Guide]
 
 ────────────────
 
@@ -34,7 +29,6 @@ Live broadcast / today's event / weekly fallback
 20 Ultimate chapters · 86 fighter guides
 
 Most played here: Bowser · Kirby · Joker
-
 [Ultimate Guide] [Fighter Guides] [My Fighter Guides] [My Setup]
 
 ────────────────
@@ -48,16 +42,14 @@ Most played here: Bowser · Kirby · Joker
 Voice activity, only when occupied
 
 Deutsch Buddy today
-
 [General] [Media] [Tall Grass] [Suggestions]
 
 ────────────────
 
-👋 New here?
+👋 New here?                         [Read Rules]
 
 Channels & Roles onboarding guidance
-
-[Read Rules] [Announcements] [Stream Alerts] [Play Alerts] [Deutsch Buddy]
+[Announcements] [Stream Alerts] [Play Alerts] [Deutsch Buddy]
 
 Home updates automatically…
 ```
