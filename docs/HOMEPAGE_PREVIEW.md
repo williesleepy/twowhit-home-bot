@@ -1,9 +1,10 @@
 # Homepage shape
 
-The exact text is data-dependent, but the Components V2 message is intentionally organized as one calm, scannable control center. Major sections use **large Components V2 separator spacing**, while related list items stay compact.
+The exact text is data-dependent, but the Components V2 message is intentionally organized as one calm, scannable control center. Major sections use **large Components V2 separator spacing**, while related list items stay compact. Blank lines shown below are deliberate.
 
 ```text
 ☁️ TwoWhit’s Tots
+
 Your little corner of the internet.
 
 53 members · 32 Smashers · 37 Tots
@@ -12,15 +13,19 @@ Your little corner of the internet.
 
 ────────────────
 
-🟢 Play Desk                         [Open Play Desk]
+🟢 Play Desk
 
 Nobody is looking right now.
 
+[Open Play Desk]
+
 ────────────────
 
-📺 Tournament Streams This Week     [Open Stream Guide]
+📺 Tournament Streams This Week
 
 Live broadcast / today's event / weekly fallback
+
+[Open Stream Guide]
 
 ────────────────
 
@@ -48,10 +53,11 @@ Deutsch Buddy today
 
 ────────────────
 
-👋 New here?                         [Read Rules]
+👋 New here?
 
 Channels & Roles onboarding guidance
-[Announcements] [Stream Alerts] [Play Alerts] [Deutsch Buddy]
+
+[Read Rules] [Announcements] [Stream Alerts] [Play Alerts] [Deutsch Buddy]
 
 Home updates automatically…
 ```

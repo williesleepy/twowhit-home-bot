@@ -157,7 +157,7 @@ test("dashboard uses roomy section spacing without bloating list items", () => {
 });
 
 
-test("only Learn Smash and Around the server add a spacer before their button rows", () => {
+test("requested homepage layout preserves deliberate spacing and button placement", () => {
   const dashboard = buildHomeDashboard(data, config, { changedAt: new Date() });
   const components = dashboard.components;
 
@@ -166,19 +166,37 @@ test("only Learn Smash and Around the server add a spacer before their button ro
     if (component?.type === 9) return component.components?.[0]?.content ?? "";
     return "";
   };
+  const buttonLabels = (component) => component?.type === 1
+    ? component.components.map((button) => button.label)
+    : [];
 
-  const learnIndex = components.findIndex((component) => textContent(component).includes("## 📚 Learn Smash"));
-  const aroundIndex = components.findIndex((component) => textContent(component).includes("Around the server"));
-  const playIndex = components.findIndex((component) => textContent(component).includes("## 🟢 Play Desk"));
-  const streamIndex = components.findIndex((component) => /Tournament Streams|Tournaments Today/.test(textContent(component)));
+  const header = components.find((component) =>
+    component.type === 10 && component.content.startsWith("# ☁️ TwoWhit’s Tots"));
+  assert.ok(header);
+  assert.match(
+    header.content,
+    /^# ☁️ TwoWhit’s Tots\n\n\*\*Your little corner of the internet\.\*\*\n\n/,
+  );
+
+  const expectedButtonRows = [
+    ["## 🟢 Play Desk", ["Open Play Desk"]],
+    ["Tournament Streams", ["Open Stream Guide"]],
+    ["## 📚 Learn Smash", ["Ultimate Guide", "Fighter Guides", "My Fighter Guides", "My Setup"]],
+    ["Around the server", ["General", "Media", "Tall Grass", "Suggestions"]],
+    ["### 👋 New here?", ["Read Rules", "Announcements", "Stream Alerts", "Play Alerts", "Deutsch Buddy"]],
+  ];
+
+  for (const [needle, expectedLabels] of expectedButtonRows) {
+    const textIndex = components.findIndex((component) => textContent(component).includes(needle));
+    assert.notEqual(textIndex, -1, `missing section: ${needle}`);
+    assert.match(textContent(components[textIndex]), /\n\u200b$/, `${needle} should have a deliberate blank line before its buttons`);
+    assert.deepEqual(buttonLabels(components[textIndex + 1]), expectedLabels, `${needle} buttons should sit directly underneath`);
+  }
+
   const newHereIndex = components.findIndex((component) => textContent(component).includes("### 👋 New here?"));
+  assert.notEqual(components[newHereIndex]?.type, 9, "New here should no longer use a right-side Read Rules accessory");
 
-  assert.match(textContent(components[learnIndex]), /\n\u200b$/);
-  assert.equal(components[learnIndex + 1]?.type, 1);
-  assert.match(textContent(components[aroundIndex]), /\n\u200b$/);
-  assert.equal(components[aroundIndex + 1]?.type, 1);
-
-  assert.doesNotMatch(textContent(components[playIndex]), /\n\u200b$/);
-  assert.doesNotMatch(textContent(components[streamIndex]), /\n\u200b$/);
-  assert.doesNotMatch(textContent(components[newHereIndex]), /\n\u200b$/);
+  const footer = components.at(-1);
+  assert.equal(footer.type, 10);
+  assert.match(footer.content, /^\u200b\n-# Home updates automatically/, "footer should keep a deliberate blank line after the final button row");
 });

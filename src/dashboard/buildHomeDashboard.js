@@ -9,9 +9,15 @@ function text(content) {
 }
 
 function textBeforeButtons(content) {
-  // Preserve one blank-looking line before selected button rows without
-  // consuming another Components V2 component.
+  // Preserve one blank-looking line before a button row without consuming
+  // another Components V2 component.
   return text(`${content}\n\u200b`);
+}
+
+function textAfterButtons(content) {
+  // Preserve one blank-looking line after a button row without consuming
+  // another Components V2 component.
+  return text(`\u200b\n${content}`);
 }
 
 function separator({ large = false, divider = true } = {}) {
@@ -214,7 +220,7 @@ export function buildHomeDashboard(data, config, meta = {}) {
   const titleEmoji = data.theme.emoji || "☁️";
 
   children.push(text(
-    `# ${titleEmoji} ${data.guild.name}\n` +
+    `# ${titleEmoji} ${data.guild.name}\n\n` +
     `**${config.tagline}**\n\n` +
     `${memberHeader(data)}\n\n` +
     liveHeaderLine(data, config),
@@ -229,16 +235,16 @@ export function buildHomeDashboard(data, config, meta = {}) {
   }
 
   children.push(separator({ large: true }));
-  children.push(section(
-    playDeskText(data, config),
+  children.push(textBeforeButtons(playDeskText(data, config)));
+  children.push(row([
     linkButton("Open Play Desk", guildChannel(config, "playDesk")),
-  ));
+  ]));
 
   children.push(separator({ large: true }));
-  children.push(section(
-    streamGuideText(data, config),
+  children.push(textBeforeButtons(streamGuideText(data, config)));
+  children.push(row([
     linkButton("Open Stream Guide", guildChannel(config, "tournamentStreams")),
-  ));
+  ]));
 
   children.push(separator({ large: true }));
   children.push(textBeforeButtons(learningText(data)));
@@ -259,11 +265,11 @@ export function buildHomeDashboard(data, config, meta = {}) {
   ]));
 
   children.push(separator({ large: true }));
-  children.push(section(
+  children.push(textBeforeButtons(
     "### 👋 New here?\n\nRead the rules, use **Channels & Roles** to choose your interests, fighters, color, and notifications, then jump in whenever you want.",
-    linkButton("Read Rules", guildChannel(config, "rules")),
   ));
   children.push(row([
+    linkButton("Read Rules", guildChannel(config, "rules")),
     linkButton("Announcements", guildChannel(config, "announcements")),
     linkButton("Stream Alerts", guildChannel(config, "streamAlerts")),
     linkButton("Play Alerts", guildChannel(config, "playAlerts")),
@@ -271,7 +277,7 @@ export function buildHomeDashboard(data, config, meta = {}) {
   ]));
 
   const changedAt = meta.changedAt ?? new Date();
-  children.push(text(`-# Home updates automatically when the server changes • Last dashboard change ${discordTimestamp(changedAt, "R")}`));
+  children.push(textAfterButtons(`-# Home updates automatically when the server changes • Last dashboard change ${discordTimestamp(changedAt, "R")}`));
 
   return {
     type: Type.container,
