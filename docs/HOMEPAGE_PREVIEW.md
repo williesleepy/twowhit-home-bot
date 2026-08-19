@@ -4,7 +4,6 @@ The exact text is data-dependent, but the Components V2 message is intentionally
 
 ```text
 ☁️ TwoWhit’s Tots
-
 Your little corner of the internet.
 
 53 members · 32 Smashers · 37 Tots
@@ -13,19 +12,15 @@ Your little corner of the internet.
 
 ────────────────
 
-🟢 Play Desk
+🟢 Play Desk                         [Open Play Desk]
 
 Nobody is looking right now.
 
-[Open Play Desk]
-
 ────────────────
 
-📺 Tournament Streams This Week
+📺 Tournament Streams This Week     [Open Stream Guide]
 
 Live broadcast / today's event / weekly fallback
-
-[Open Stream Guide]
 
 ────────────────
 
@@ -53,11 +48,10 @@ Deutsch Buddy today
 
 ────────────────
 
-👋 New here?
+👋 New here?                         [Read Rules]
 
 Channels & Roles onboarding guidance
-
-[Read Rules] [Announcements] [Stream Alerts] [Play Alerts] [Deutsch Buddy]
+[Announcements] [Stream Alerts] [Play Alerts] [Deutsch Buddy]
 
 Home updates automatically…
 ```

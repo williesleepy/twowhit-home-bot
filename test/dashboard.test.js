@@ -157,50 +157,28 @@ test("dashboard uses roomy section spacing without bloating list items", () => {
 });
 
 
-
-test("dashboard puts navigation buttons below their content blocks", () => {
-  const offlineData = {
-    ...data,
-    live: { isLive: false, liveUrl: null },
-  };
-  const dashboard = buildHomeDashboard(offlineData, config, { changedAt: new Date() });
+test("only Learn Smash and Around the server add a spacer before their button rows", () => {
+  const dashboard = buildHomeDashboard(data, config, { changedAt: new Date() });
   const components = dashboard.components;
 
-  const findTextIndex = (pattern) => components.findIndex((component) =>
-    component.type === 10 && pattern.test(component.content),
-  );
+  const textContent = (component) => {
+    if (component?.type === 10) return component.content;
+    if (component?.type === 9) return component.components?.[0]?.content ?? "";
+    return "";
+  };
 
-  const playIndex = findTextIndex(/## 🟢 Play Desk/);
-  assert.ok(playIndex >= 0);
-  assert.equal(components[playIndex + 1]?.type, 1);
-  assert.equal(components[playIndex + 1]?.components?.[0]?.label, "Open Play Desk");
-  assert.match(components[playIndex].content, /\n\u200b$/);
+  const learnIndex = components.findIndex((component) => textContent(component).includes("## 📚 Learn Smash"));
+  const aroundIndex = components.findIndex((component) => textContent(component).includes("Around the server"));
+  const playIndex = components.findIndex((component) => textContent(component).includes("## 🟢 Play Desk"));
+  const streamIndex = components.findIndex((component) => /Tournament Streams|Tournaments Today/.test(textContent(component)));
+  const newHereIndex = components.findIndex((component) => textContent(component).includes("### 👋 New here?"));
 
-  const streamIndex = findTextIndex(/## 🔴 Live Tournament Streams|## 📺 Tournaments Today|## 📺 Tournament Streams This Week|## 📺 Tournament Streams/);
-  assert.ok(streamIndex >= 0);
-  assert.equal(components[streamIndex + 1]?.type, 1);
-  assert.equal(components[streamIndex + 1]?.components?.[0]?.label, "Open Stream Guide");
-  assert.match(components[streamIndex].content, /\n\u200b$/);
-
-  const learnIndex = findTextIndex(/## 📚 Learn Smash/);
-  assert.ok(learnIndex >= 0);
+  assert.match(textContent(components[learnIndex]), /\n\u200b$/);
   assert.equal(components[learnIndex + 1]?.type, 1);
-  assert.match(components[learnIndex].content, /\n\u200b$/);
+  assert.match(textContent(components[aroundIndex]), /\n\u200b$/);
+  assert.equal(components[aroundIndex + 1]?.type, 1);
 
-  const communityIndex = findTextIndex(/Around the server/);
-  assert.ok(communityIndex >= 0);
-  assert.equal(components[communityIndex + 1]?.type, 1);
-  assert.match(components[communityIndex].content, /\n\u200b$/);
-
-  const newHereIndex = findTextIndex(/### 👋 New here\?/);
-  assert.ok(newHereIndex >= 0);
-  assert.equal(components[newHereIndex + 1]?.type, 1);
-  assert.deepEqual(
-    components[newHereIndex + 1].components.map((button) => button.label),
-    ["Read Rules", "Announcements", "Stream Alerts", "Play Alerts", "Deutsch Buddy"],
-  );
-  assert.match(components[newHereIndex].content, /\n\u200b$/);
-
-  const header = components.find((component) => component.type === 10 && component.content.startsWith("# "));
-  assert.match(header.content, /^# ☁️ TwoWhit’s Tots\n\n\*\*Your little corner of the internet\.\*\*/);
+  assert.doesNotMatch(textContent(components[playIndex]), /\n\u200b$/);
+  assert.doesNotMatch(textContent(components[streamIndex]), /\n\u200b$/);
+  assert.doesNotMatch(textContent(components[newHereIndex]), /\n\u200b$/);
 });

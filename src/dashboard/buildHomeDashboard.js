@@ -8,6 +8,12 @@ function text(content) {
   return { type: Type.text, content };
 }
 
+function textBeforeButtons(content) {
+  // Preserve one blank-looking line before selected button rows without
+  // consuming another Components V2 component.
+  return text(`${content}\n\u200b`);
+}
+
 function separator({ large = false, divider = true } = {}) {
   return { type: Type.separator, divider, spacing: large ? 2 : 1 };
 }
@@ -31,13 +37,6 @@ function section(content, accessory) {
     components: [text(content)],
     accessory,
   };
-}
-
-function textBeforeButtons(content) {
-  // Discord can visually crowd a Text Display and the following Action Row.
-  // A zero-width spacer line preserves one blank-looking line without consuming
-  // another Components V2 component.
-  return text(`${content}\n\u200b`);
 }
 
 function guildChannel(config, key) {
@@ -215,7 +214,7 @@ export function buildHomeDashboard(data, config, meta = {}) {
   const titleEmoji = data.theme.emoji || "☁️";
 
   children.push(text(
-    `# ${titleEmoji} ${data.guild.name}\n\n` +
+    `# ${titleEmoji} ${data.guild.name}\n` +
     `**${config.tagline}**\n\n` +
     `${memberHeader(data)}\n\n` +
     liveHeaderLine(data, config),
@@ -230,16 +229,16 @@ export function buildHomeDashboard(data, config, meta = {}) {
   }
 
   children.push(separator({ large: true }));
-  children.push(textBeforeButtons(playDeskText(data, config)));
-  children.push(row([
+  children.push(section(
+    playDeskText(data, config),
     linkButton("Open Play Desk", guildChannel(config, "playDesk")),
-  ]));
+  ));
 
   children.push(separator({ large: true }));
-  children.push(textBeforeButtons(streamGuideText(data, config)));
-  children.push(row([
+  children.push(section(
+    streamGuideText(data, config),
     linkButton("Open Stream Guide", guildChannel(config, "tournamentStreams")),
-  ]));
+  ));
 
   children.push(separator({ large: true }));
   children.push(textBeforeButtons(learningText(data)));
@@ -260,11 +259,11 @@ export function buildHomeDashboard(data, config, meta = {}) {
   ]));
 
   children.push(separator({ large: true }));
-  children.push(textBeforeButtons(
+  children.push(section(
     "### 👋 New here?\n\nRead the rules, use **Channels & Roles** to choose your interests, fighters, color, and notifications, then jump in whenever you want.",
+    linkButton("Read Rules", guildChannel(config, "rules")),
   ));
   children.push(row([
-    linkButton("Read Rules", guildChannel(config, "rules")),
     linkButton("Announcements", guildChannel(config, "announcements")),
     linkButton("Stream Alerts", guildChannel(config, "streamAlerts")),
     linkButton("Play Alerts", guildChannel(config, "playAlerts")),
