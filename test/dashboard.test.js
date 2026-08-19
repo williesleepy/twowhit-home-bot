@@ -156,3 +156,51 @@ test("dashboard uses roomy section spacing without bloating list items", () => {
   assert.match(dashboardText, /### 👋 New here\?\n\nRead the rules/);
 });
 
+
+
+test("dashboard puts navigation buttons below their content blocks", () => {
+  const offlineData = {
+    ...data,
+    live: { isLive: false, liveUrl: null },
+  };
+  const dashboard = buildHomeDashboard(offlineData, config, { changedAt: new Date() });
+  const components = dashboard.components;
+
+  const findTextIndex = (pattern) => components.findIndex((component) =>
+    component.type === 10 && pattern.test(component.content),
+  );
+
+  const playIndex = findTextIndex(/## 🟢 Play Desk/);
+  assert.ok(playIndex >= 0);
+  assert.equal(components[playIndex + 1]?.type, 1);
+  assert.equal(components[playIndex + 1]?.components?.[0]?.label, "Open Play Desk");
+  assert.match(components[playIndex].content, /\n\u200b$/);
+
+  const streamIndex = findTextIndex(/## 🔴 Live Tournament Streams|## 📺 Tournaments Today|## 📺 Tournament Streams This Week|## 📺 Tournament Streams/);
+  assert.ok(streamIndex >= 0);
+  assert.equal(components[streamIndex + 1]?.type, 1);
+  assert.equal(components[streamIndex + 1]?.components?.[0]?.label, "Open Stream Guide");
+  assert.match(components[streamIndex].content, /\n\u200b$/);
+
+  const learnIndex = findTextIndex(/## 📚 Learn Smash/);
+  assert.ok(learnIndex >= 0);
+  assert.equal(components[learnIndex + 1]?.type, 1);
+  assert.match(components[learnIndex].content, /\n\u200b$/);
+
+  const communityIndex = findTextIndex(/Around the server/);
+  assert.ok(communityIndex >= 0);
+  assert.equal(components[communityIndex + 1]?.type, 1);
+  assert.match(components[communityIndex].content, /\n\u200b$/);
+
+  const newHereIndex = findTextIndex(/### 👋 New here\?/);
+  assert.ok(newHereIndex >= 0);
+  assert.equal(components[newHereIndex + 1]?.type, 1);
+  assert.deepEqual(
+    components[newHereIndex + 1].components.map((button) => button.label),
+    ["Read Rules", "Announcements", "Stream Alerts", "Play Alerts", "Deutsch Buddy"],
+  );
+  assert.match(components[newHereIndex].content, /\n\u200b$/);
+
+  const header = components.find((component) => component.type === 10 && component.content.startsWith("# "));
+  assert.match(header.content, /^# ☁️ TwoWhit’s Tots\n\n\*\*Your little corner of the internet\.\*\*/);
+});
